@@ -10,25 +10,24 @@ public class SnippetStore {
     private static final String NUM_SNIPS_LABEL = "numSnippets";
     private static final String SNIP_LABEL_PREFIX = "SNIP#";
 
-    private ArrayList<String> snippets = null;
+    private final ArrayList<String> snippets;
 
-    private static SnippetStore mInstance;
+    private static SnippetStore mInstance = null;
 
-    public static SnippetStore getInstance() {
-        if (mInstance == null)
-            mInstance = new SnippetStore();
-        return mInstance;
+    public static synchronized SnippetStore getInstance() {
+            if (mInstance == null)
+                mInstance = new SnippetStore();
+            return mInstance;
     }
 
     private SnippetStore() {
-        if (snippets != null)
-            return;
+        snippets = new ArrayList<>();
 
         reload();
     }
 
-    public void reload() {
-        snippets = new ArrayList<>();
+    public synchronized void reload() {
+        snippets.clear();
         SharedPreferences prefs = getPrefs();
         int numSnips = prefs.getInt(NUM_SNIPS_LABEL, 0);
 
@@ -39,32 +38,31 @@ public class SnippetStore {
     }
 
     public ArrayList<String> loadSnippets() {
-        assert snippets != null;
         return snippets;
     }
 
     public void storeSnippets(ArrayList<String> snippetNames) {
-        snippets = snippetNames;
+        snippets.clear();
+        snippets.addAll(snippetNames);
         storeSnippets();
     }
 
-    public void addSnippet(String snippetName) {
-        if (snippets.contains(snippetName))
-            return;
+    public synchronized void addSnippet(String snippetName) {
+//        if (snippets.contains(snippetName))
+//            return;
 
+        String newKey = SNIP_LABEL_PREFIX + snippets.size();
         snippets.add(snippetName);
-        int numSnips = snippets.size();
-        String newKey = SNIP_LABEL_PREFIX + (numSnips - 1);
 
         getPrefs().edit()
-                .putInt(NUM_SNIPS_LABEL, numSnips)
+                .putInt(NUM_SNIPS_LABEL, snippets.size())
                 .putString(newKey, snippetName)
                 .apply();
 
         saveSnip(snippetName, "");
     }
 
-    public void removeSnippet(String snippetName) {
+    public synchronized void removeSnippet(String snippetName) {
         snippets.remove(snippetName);
         storeSnippets();
 
@@ -91,13 +89,13 @@ public class SnippetStore {
 
     private static final String SNIPPET_DATA_KEY = "snipContents";
 
-    public void saveSnip(String name, String contents) {
+    public synchronized void saveSnip(String name, String contents) {
         getPrefs(name).edit()
                 .putString(SNIPPET_DATA_KEY, contents)
                 .apply();
     }
 
-    public String loadSnip(String name) {
+    public synchronized String loadSnip(String name) {
         return getPrefs(name).getString(SNIPPET_DATA_KEY, "");
     }
 
@@ -108,5 +106,9 @@ public class SnippetStore {
     private SharedPreferences getPrefs(String name) {
         return BTControl.getContext()
                 .getSharedPreferences(name, Context.MODE_PRIVATE);
+    }
+
+    protected void finalize() {
+        storeSnippets();
     }
 }

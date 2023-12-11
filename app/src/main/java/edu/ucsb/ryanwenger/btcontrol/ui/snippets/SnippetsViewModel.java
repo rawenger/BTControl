@@ -27,26 +27,15 @@ public class SnippetsViewModel extends ViewModel {
 
     // null return value indicates success here; non-null is error message
     public @Nullable String addSnip(String name) {
-        ArrayList<String> val = mSnips.getValue();
-        if (val == null)
-            val = new ArrayList<>();
-        else if (val.contains(name))
+        if (mSnipStore.loadSnippets().contains(name))
             return "name '" + name + "' is taken";
 
-        val.add(name);
-        mSnips.setValue(val);
         mSnipStore.addSnippet(name);
 
         return null;
     }
 
     public void deleteSnip(String name) {
-        ArrayList<String> val = mSnips.getValue();
-        if (val == null)
-            return;
-
-        val.remove(name);
         mSnipStore.removeSnippet(name);
-        mSnips.setValue(val);
     }
 }

@@ -1,7 +1,6 @@
 package edu.ucsb.ryanwenger.btcontrol.ui.snippets;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -42,8 +41,6 @@ public class SnippetsFragment extends ListFragment {
         binding = FragmentSnippetsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
         mViewModel.getSnips().observe(getViewLifecycleOwner(), this::updateSnippetList);
 
         return root;
@@ -54,8 +51,8 @@ public class SnippetsFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mListAdapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_list_item_1,
-                mViewModel.getSnips().getValue());
+                android.R.layout.simple_list_item_1,  mViewModel.getSnips().getValue());
+
         setListAdapter(mListAdapter);
 
         /* set up the 'create snippet' button */
@@ -78,8 +75,6 @@ public class SnippetsFragment extends ListFragment {
     }
 
     private void updateSnippetList(ArrayList<String> snips) {
-        mListAdapter.clear();
-        mListAdapter.addAll(snips);
         mListAdapter.notifyDataSetChanged();
     }
 
