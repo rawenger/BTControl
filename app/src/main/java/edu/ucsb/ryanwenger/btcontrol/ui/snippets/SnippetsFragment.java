@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,6 +57,8 @@ public class SnippetsFragment extends ListFragment {
 
         setListAdapter(mListAdapter);
 
+        registerForContextMenu(getListView());
+
         /* set up the 'create snippet' button */
         FloatingActionButton createSnip = requireView().findViewById(R.id.new_snippet);
         createSnip.setOnClickListener(this::onCreateSnipClick);
@@ -65,7 +69,37 @@ public class SnippetsFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         String clicked = mListAdapter.getItem(position);
 
-        // TODO: show context menu with run, edit, delete options
+        PopupMenu menu = new PopupMenu (getContext(), v);
+        menu.setOnMenuItemClickListener (item -> {
+            int id1 = item.getItemId();
+            if (id1 == R.id.item_run) {
+
+            } else if (id1 == R.id.item_edit) {
+                editSnip(clicked);
+
+            } else if (id1 == R.id.item_delete) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(l.getContext());
+                builder.setTitle("Delete snippet '" + clicked + "'?")
+                        .setMessage("This action cannot be undone!");
+
+                builder.setPositiveButton("Delete",
+                        (dialog, which) -> {
+                            mViewModel.deleteSnip(clicked);
+                            mListAdapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                        })
+                        .setNegativeButton("Cancel",
+                                (dialog, which) -> dialog.cancel());
+
+                builder.show();
+            } else {
+                return false;
+            }
+
+            return true;
+        });
+        menu.inflate(R.menu.snippet_popup);
+        menu.show();
     }
 
     @Override
@@ -78,6 +112,12 @@ public class SnippetsFragment extends ListFragment {
         mListAdapter.notifyDataSetChanged();
     }
 
+    private void editSnip(String name) {
+        Intent toSnipEditor = new Intent(BTControl.getContext(), SnippetEditor.class);
+        toSnipEditor.putExtra(SnippetEditor.EXTRA_SNIPPET_NAME, name);
+        SnippetsFragment.this.startActivity(toSnipEditor);
+    }
+
     private void onCreateSnipClick(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         builder.setTitle("Create Snippet");
@@ -85,7 +125,7 @@ public class SnippetsFragment extends ListFragment {
         // Set up the input
         final EditText input = new EditText(view.getContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        input.setText("Snippet name");
+        input.setText("Snippet");
         builder.setView(input);
 
         final String[] newSnipName = new String[1];
@@ -106,9 +146,7 @@ public class SnippetsFragment extends ListFragment {
                         return;
                     }
 
-                    Intent toSnipEditor = new Intent(BTControl.getContext(), SnippetEditor.class);
-                    toSnipEditor.putExtra(SnippetEditor.EXTRA_SNIPPET_NAME, newSnipName[0]);
-                    SnippetsFragment.this.startActivity(toSnipEditor);
+                    editSnip(newSnipName[0]);
                 });
 
         builder.setNegativeButton("Cancel",

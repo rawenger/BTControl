@@ -107,6 +107,9 @@
     <string name="run">Run</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="snippet_menu_run">Run</string>
+    <string name="snippet_menu_edit">Edit</string>
+    <string name="snippet_menu_delete">Delete</string>
     <!--    <string name="test_history"></string>-->
 
 
