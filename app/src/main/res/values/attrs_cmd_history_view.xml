@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="CmdHistoryView">
+        <attr name="targetDevice" format="string" />
+    </declare-styleable>
+</resources>

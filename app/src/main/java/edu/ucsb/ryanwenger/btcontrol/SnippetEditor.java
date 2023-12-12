@@ -3,6 +3,7 @@ package edu.ucsb.ryanwenger.btcontrol;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -38,15 +39,10 @@ public class SnippetEditor extends AppCompatActivity {
         mTextEditor = findViewById(R.id.snip_editor);
         mTextEditor.setText(snipContents);
         mTextEditor.bringToFront();
-
-        // TODO: create EditText
-        //  create 'run', 'save', 'cancel' buttons
-
     }
 
     public void onSave(View view) {
         // save but dont exit the activity
-        // TODO: why aren't snippets being saved at all??
         mSnippetStore.saveSnip(mSnipName, mTextEditor.getText().toString());
         Snackbar.make(view, "Saved", Snackbar.LENGTH_SHORT).show();
     }
@@ -56,8 +52,16 @@ public class SnippetEditor extends AppCompatActivity {
     }
 
     public void onCancel(View view) {
-        // TODO: prompt to save if contents have been edited!
+        // prompt to save if contents have been edited!
 
-        finish();
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        builder.setTitle("Save changes to '" + mSnipName +"' before exiting?");
+        builder.setPositiveButton("Save",
+                        (dialog, which) -> onSave(view))
+                .setNegativeButton("Don't save",
+                        (dialog, which) -> dialog.dismiss())
+                .setOnDismissListener(dialog -> finish());
+
+        builder.show();
     }
 }

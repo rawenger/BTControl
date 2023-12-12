@@ -24,7 +24,8 @@
             android:imeOptions="actionSend"
             android:singleLine="true" />
 
-    <HorizontalScrollView
+    <edu.ucsb.ryanwenger.btcontrol.ui.CmdHistoryView
+            android:id="@+id/send_cmds_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/bt_command_text_view"
@@ -34,34 +35,6 @@
             android:layout_marginTop="65dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="50dp" >
-
-        <ScrollView
-                android:id="@+id/history_scrollview"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-
-             <TextView
-                    android:id="@+id/cmd_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text=""
-
-                    android:fontFamily="@font/courier_prime"
-                    android:textSize="16sp"
-                    android:editable="false"
-                    android:textIsSelectable="true"
-                    android:singleLine="false"
-
-                    android:scrollbars="horizontal|vertical"
-                    android:overScrollMode="ifContentScrolls"
-                    android:fadeScrollbars="true"
-                    android:scrollHorizontally="true" />
-
-        </ScrollView>
-
-    </HorizontalScrollView>
-
-
+            android:layout_marginBottom="50dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

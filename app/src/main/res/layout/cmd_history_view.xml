@@ -1,0 +1,28 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+            android:tag="vertical_scrollview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:tag="cmd_history"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text=""
+
+                android:fontFamily="@font/courier_prime"
+                android:textSize="16sp"
+                android:editable="false"
+                android:textIsSelectable="true"
+                android:singleLine="false"
+
+                android:scrollbars="horizontal|vertical"
+                android:overScrollMode="ifContentScrolls"
+                android:fadeScrollbars="true"
+                android:scrollHorizontally="true" />
+
+    </ScrollView>
+
+</merge>

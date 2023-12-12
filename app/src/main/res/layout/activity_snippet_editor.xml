@@ -40,7 +40,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="22dp"
-            android:contentDescription="@string/run" />
+            android:contentDescription="@string/run"
+            android:onClick="onRun"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -67,7 +68,8 @@
             android:layout_marginStart="44dp"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="20dp"
-            android:contentDescription="@string/cancel" />
+            android:contentDescription="@string/cancel"
+            android:onClick="onCancel"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

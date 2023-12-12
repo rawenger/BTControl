@@ -4,26 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import edu.ucsb.ryanwenger.btcontrol.bluetooth.BTDevice;
+import edu.ucsb.ryanwenger.btcontrol.ui.CmdHistoryView;
 
 public class SendCommandsActivity extends AppCompatActivity {
     public static final String BTDEV_EXTRA_KEY = "BTDeviceHandle";
 
-    AutoCompleteTextView mCmdEntryView;
-    TextView mHistoryView;
-
-    BTDevice mTargetDevice;
-
-    ArrayAdapter<String> mAutocompleteAdapter;
+    private AutoCompleteTextView mCmdEntryView;
+    private CmdHistoryView mHistoryView;
+    private BTDevice mTargetDevice;
+    private ArrayAdapter<String> mAutocompleteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,45 +31,37 @@ public class SendCommandsActivity extends AppCompatActivity {
 
         mTargetDevice = new BTDevice(target);
         mTargetDevice.buildCommandMaps();
-//        BTDeviceManager.getInstance().connectDevice(mTargetDevice);
 
         mCmdEntryView = findViewById(R.id.bt_command_text_view);
-//        mCmdEntryView.set;
-        mHistoryView = findViewById(R.id.cmd_history);
         assert mCmdEntryView != null;
         mAutocompleteAdapter = new ArrayAdapter<>(this,
                 android.R.layout.select_dialog_item, mTargetDevice.getAutocomplete());
         mCmdEntryView.setThreshold(0);
         mCmdEntryView.setAdapter(mAutocompleteAdapter);
 
-        mCmdEntryView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            AtomicReference<String> cmdOutput = new AtomicReference<>("");
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId != EditorInfo.IME_ACTION_SEND)
-                    return false;
+        mHistoryView = findViewById(R.id.send_cmds_history);
 
-                ScrollView sv = findViewById(R.id.history_scrollview);
+        mCmdEntryView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId != EditorInfo.IME_ACTION_SEND)
+                return false;
 
-                CharSequence cmd = v.getText();
-                mHistoryView.append("> " + cmd + "\n");
-                v.setText("");
-                sv.smoothScrollTo(0, sv.getBottom());
 
-                mTargetDevice.dispatchAsync(cmd, SendCommandsActivity.this,
-                        (String output) ->  {
-                            mHistoryView.append(output + "\n\n");
-                            sv.smoothScrollTo(0, sv.getBottom());
+            CharSequence cmd = v.getText();
+            mHistoryView.printCommand(cmd);
+            v.setText("");
 
-                            mAutocompleteAdapter.clear();
-                            mAutocompleteAdapter.addAll(mTargetDevice.getAutocomplete());
-                            mAutocompleteAdapter.notifyDataSetChanged();
-                        });
+            mTargetDevice.dispatchAsync(cmd, SendCommandsActivity.this,
+                    (String output) ->  {
 
-                return true;
-            }
+                        mHistoryView.printResult(output);
+
+                        mAutocompleteAdapter.clear();
+                        mAutocompleteAdapter.addAll(mTargetDevice.getAutocomplete());
+                        mAutocompleteAdapter.notifyDataSetChanged();
+                    });
+
+            return true;
         });
-//        mHistoryView.setMovementMethod(new ScrollingMovementMethod());
 
     }
 
