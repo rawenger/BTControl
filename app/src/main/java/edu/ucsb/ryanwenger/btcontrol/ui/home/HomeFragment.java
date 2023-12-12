@@ -39,12 +39,8 @@ public class HomeFragment extends ListFragment {
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        mViewModel.refreshDevices();
         mViewModel.getDevs().observe(getViewLifecycleOwner(), this::updateDeviceList);
         mDevList = mViewModel.getDevs().getValue();
-
-//        mBinding.getRoot().appBarDeviceListing.addDevice.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show());
 
         return root;
     }
@@ -57,12 +53,11 @@ public class HomeFragment extends ListFragment {
                 android.R.layout.simple_list_item_1,
                 mDevList);
         setListAdapter(mListAdapter);
+        mListAdapter.notifyDataSetChanged();
 
-        /* set up the 'add device' button */
+        /* set up the 'refresh' button */
         FloatingActionButton refreshDevBut = requireView().findViewById(R.id.refresh_devices);
-        refreshDevBut.setOnClickListener(view1 -> {
-            mViewModel.refreshDevices();
-        });
+        refreshDevBut.setOnClickListener(view1 -> mViewModel.refreshDevices());
     }
 
     @Override
@@ -82,9 +77,6 @@ public class HomeFragment extends ListFragment {
 
     // observer callback for whenever the device list changes
     private void updateDeviceList(ArrayList<BTDevice> deviceList) {
-        mDevList = deviceList;
-        mListAdapter.clear();
-        mListAdapter.addAll(deviceList);
         mListAdapter.notifyDataSetChanged();
     }
 }

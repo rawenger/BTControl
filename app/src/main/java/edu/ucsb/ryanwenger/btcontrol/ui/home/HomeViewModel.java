@@ -11,14 +11,13 @@ import edu.ucsb.ryanwenger.btcontrol.bluetooth.BTDeviceManager;
 
 public class HomeViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<BTDevice>> mDevs;
-//    private final DeviceStore mDevStore;
 
     private BTDeviceManager mDevMgr;
 
     public HomeViewModel() {
         /* initialize the device list from disk */
-        mDevs = new MutableLiveData<>();
         mDevMgr = BTDeviceManager.getInstance();
+        mDevs = new MutableLiveData<>(mDevMgr.getAllDevices());
     }
 
     public LiveData<ArrayList<BTDevice>> getDevs() {
