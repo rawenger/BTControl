@@ -22,7 +22,6 @@ public class BTControl extends Application {
 
     public static Context getContext(){
         return instance.getApplicationContext();
-        // or return instance.getApplicationContext();
     }
 
     public static UUID getUUID() {

@@ -273,7 +273,7 @@ public class BTDevice {
         return  String.format("%s: completed after %d ms", action[0], tEnd - tStart);
     }
 
-    public void finalize() {
+    protected void finalize() {
         if (mProtoHandle != null)
             BTDeviceManager.getInstance().closeProxy(mProtoHandle);
     }
@@ -462,12 +462,8 @@ public class BTDevice {
         public void onGetReport(BluetoothDevice device, byte type, byte id, int bufferSize) {
             super.onGetReport(device, type, id, bufferSize);
 
-            switch (type) {
-                case BluetoothHidDevice.REPORT_TYPE_FEATURE:
-                    hid.replyReport(device, type, REPORT_ID_FEATURE, new byte[]{0b101});
-                    break;
-                default:
-                    break;
+            if (type == BluetoothHidDevice.REPORT_TYPE_FEATURE) {
+                hid.replyReport(device, type, REPORT_ID_FEATURE, new byte[]{0b101});
             }
         }
 
@@ -491,7 +487,7 @@ public class BTDevice {
             super.onVirtualCableUnplug(device);
         }
 
-        public void finalize() {
+        protected void finalize() {
             mCleanup = true;
             hid.disconnect(mDev);
         }

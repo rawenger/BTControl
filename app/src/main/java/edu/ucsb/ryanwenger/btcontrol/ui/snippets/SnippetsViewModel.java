@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
 
 import edu.ucsb.ryanwenger.btcontrol.SnippetStore;
 

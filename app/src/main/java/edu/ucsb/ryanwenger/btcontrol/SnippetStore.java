@@ -48,9 +48,6 @@ public class SnippetStore {
     }
 
     public synchronized void addSnippet(String snippetName) {
-//        if (snippets.contains(snippetName))
-//            return;
-
         String newKey = SNIP_LABEL_PREFIX + snippets.size();
         snippets.add(snippetName);
 

@@ -1,13 +1,12 @@
 package edu.ucsb.ryanwenger.btcontrol;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import edu.ucsb.ryanwenger.btcontrol.bluetooth.BTDevice;
 import edu.ucsb.ryanwenger.btcontrol.ui.CmdHistoryView;

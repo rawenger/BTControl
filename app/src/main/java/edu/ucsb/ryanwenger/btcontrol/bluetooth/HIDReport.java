@@ -3,10 +3,10 @@ package edu.ucsb.ryanwenger.btcontrol.bluetooth;
 import java.util.Arrays;
 
 public interface HIDReport {
-    public byte[] getReport();
-    public byte getID();
+    byte[] getReport();
+    byte getID();
 
-    public HIDReport reset();
+    HIDReport reset();
 }
 
 class HIDMouseReport implements HIDReport {

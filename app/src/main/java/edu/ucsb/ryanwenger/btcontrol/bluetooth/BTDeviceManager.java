@@ -7,23 +7,17 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothHidDevice;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import java.io.IOException;
-import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import edu.ucsb.ryanwenger.btcontrol.BTControl;
-import edu.ucsb.ryanwenger.btcontrol.MainActivity;
-import kotlinx.coroutines.sync.Mutex;
 
 public class BTDeviceManager {
     private static BTDeviceManager instance = null;
@@ -89,7 +83,6 @@ public class BTDeviceManager {
         mPairedDevs = mBtAdapter.getBondedDevices();
 
         for (BluetoothDevice dev : mPairedDevs) {
-//            if (dev.getBondState())
             res.add(new BTDevice(dev));
         }
         return res;
@@ -102,14 +95,6 @@ public class BTDeviceManager {
                 && type != BluetoothProfile.HID_DEVICE) {
             return null;
         }
-
-//        mBtAdapter.disable();
-//        mBtAdapter.enable();
-//        Intent discoverable = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        discoverable.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 60);
-//        discoverable.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//        BTControl.getInstance().startActivity(discoverable);
 
         Semaphore sem = new Semaphore(0);
 
@@ -141,7 +126,6 @@ public class BTDeviceManager {
 
         try {
             sem.acquire();
-//            Thread.sleep(1000); // wait for the service to happen or whatever
         } catch (InterruptedException e) {
             Log.d("RYANRYAN", "" + e.getLocalizedMessage());
         }

@@ -12,7 +12,7 @@ import edu.ucsb.ryanwenger.btcontrol.bluetooth.BTDeviceManager;
 public class HomeViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<BTDevice>> mDevs;
 
-    private BTDeviceManager mDevMgr;
+    private final BTDeviceManager mDevMgr;
 
     public HomeViewModel() {
         /* initialize the device list from disk */

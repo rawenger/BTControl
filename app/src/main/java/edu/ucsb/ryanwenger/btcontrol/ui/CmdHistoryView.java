@@ -1,10 +1,8 @@
 package edu.ucsb.ryanwenger.btcontrol.ui;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -60,40 +58,5 @@ public class CmdHistoryView extends HorizontalScrollView {
 
         mText = findViewWithTag("cmd_history");
         mVScroll = findViewWithTag("vertical_scrollview");
-
-//        bringChildToFront(mText);
-/*
-        // Load attributes
-        final TypedArray a = getContext().obtainStyledAttributes(
-                attrs, R.styleable.CmdHistoryView, defStyle, 0);
-
-        mExampleString = a.getString(
-                R.styleable.CmdHistoryView_exampleString);
-        mExampleColor = a.getColor(
-                R.styleable.CmdHistoryView_exampleColor,
-                mExampleColor);
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        mExampleDimension = a.getDimension(
-                R.styleable.CmdHistoryView_exampleDimension,
-                mExampleDimension);
-
-        if (a.hasValue(R.styleable.CmdHistoryView_exampleDrawable)) {
-            mExampleDrawable = a.getDrawable(
-                    R.styleable.CmdHistoryView_exampleDrawable);
-            mExampleDrawable.setCallback(this);
-        }
-
-        a.recycle();
-
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
-
- */
     }
 }
