@@ -17,9 +17,4 @@
             android:label="@string/menu_snippets"
             tools:layout="@layout/fragment_snippets" />
 
-    <fragment
-            android:id="@+id/nav_slideshow"
-            android:name="edu.ucsb.ryanwenger.btcontrol.ui.slideshow.SlideshowFragment"
-            android:label="@string/menu_slideshow"
-            tools:layout="@layout/fragment_slideshow" />
 </navigation>
