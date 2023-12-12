@@ -47,7 +47,6 @@ public class BTDevice {
     private Map<String, Function<String[], String>> mCmds = null;
 
     private BluetoothDevice mDev;
-    private BluetoothSocket mSocket = null;
 
     private BluetoothProfile mProtoHandle = null;
     private HIDConnectionMgr mHidMgr = null;
@@ -70,10 +69,6 @@ public class BTDevice {
 
     public BluetoothDevice get() {
         return mDev;
-    }
-
-    public void registerConnection(@NonNull BluetoothSocket socket) {
-        mSocket = socket;
     }
 
     public ArrayList<String> getAutocomplete() {
@@ -101,11 +96,11 @@ public class BTDevice {
     }
 
     public String dispatch(String cmd) {
-        String[] argv = cmd.split(" ", 2);
+        String[] argv = cmd.split("[\\s\\t]+", 2);
         String commandName = argv[0];
         String[] args = null;
         if (argv.length > 1)
-            args = argv[1].split(" ", 0);
+            args = argv[1].split("[\\s\\t]+", 0);
 
         Function<String[], String> action = mCmds.get(commandName);
         if (action == null)

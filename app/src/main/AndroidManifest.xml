@@ -23,6 +23,11 @@
             android:theme="@style/Theme.BTControl"
             tools:targetApi="31">
         <activity
+                android:name=".SnippetRunnerActivity"
+                android:exported="false"
+                android:label="@string/title_activity_run_snippet"
+                android:theme="@style/Theme.BTControl" />
+        <activity
                 android:name=".SnippetEditor"
                 android:exported="false" />
         <activity

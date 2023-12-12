@@ -51,7 +51,6 @@ public class CmdHistoryView extends HorizontalScrollView {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-
         inflate(context, R.layout.cmd_history_view, this);
 
         mText = findViewWithTag("cmd_history");

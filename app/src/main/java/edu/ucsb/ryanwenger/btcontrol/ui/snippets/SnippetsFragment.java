@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import edu.ucsb.ryanwenger.btcontrol.BTControl;
 import edu.ucsb.ryanwenger.btcontrol.R;
 import edu.ucsb.ryanwenger.btcontrol.SnippetEditor;
+import edu.ucsb.ryanwenger.btcontrol.SnippetRunnerActivity;
 import edu.ucsb.ryanwenger.btcontrol.databinding.FragmentSnippetsBinding;
 
 public class SnippetsFragment extends ListFragment {
@@ -68,16 +69,29 @@ public class SnippetsFragment extends ListFragment {
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         String clicked = mListAdapter.getItem(position);
+        if (clicked == null)
+            return;
 
         PopupMenu menu = new PopupMenu (getContext(), v);
         menu.setOnMenuItemClickListener (item -> {
             int id1 = item.getItemId();
+
             if (id1 == R.id.item_run) {
 
+                SnippetRunnerActivity
+                        .launch(SnippetsFragment.this.requireActivity(),
+                                clicked, null);
+
             } else if (id1 == R.id.item_edit) {
+
                 editSnip(clicked);
 
+            } else if (id1 == R.id.item_rename) {
+
+                // TODO
+
             } else if (id1 == R.id.item_delete) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(l.getContext());
                 builder.setTitle("Delete snippet '" + clicked + "'?")
                         .setMessage("This action cannot be undone!");
@@ -92,6 +106,7 @@ public class SnippetsFragment extends ListFragment {
                                 (dialog, which) -> dialog.cancel());
 
                 builder.show();
+
             } else {
                 return false;
             }

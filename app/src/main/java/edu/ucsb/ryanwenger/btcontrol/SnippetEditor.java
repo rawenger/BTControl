@@ -14,6 +14,9 @@ import com.google.android.material.snackbar.Snackbar;
 public class SnippetEditor extends AppCompatActivity {
     public static final String EXTRA_SNIPPET_NAME = "SnippetEditor.name";
 
+    private static final String BUNDLE_SNIPPET_NAME = EXTRA_SNIPPET_NAME;
+    private static final String BUNDLE_SNIPPET_CONTENTS = "SnippetEditor.contents";
+
     private @NonNull String mSnipName = "";
     private SnippetStore mSnippetStore;
 
@@ -24,20 +27,41 @@ public class SnippetEditor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snippet_editor);
 
+        mSnippetStore = SnippetStore.getInstance();
+
         Intent trigger = getIntent();
         String name = trigger.getStringExtra(EXTRA_SNIPPET_NAME);
-        if (name == null || name.equals("")) {
+        CharSequence contents;
+
+        // We could be launched from an intent or could be returning from 'Run' action
+        // *without having saved the snippet's contents*
+        if (name == null) {
+            if (savedInstanceState == null)
+                finish();
+
+            String prevName = savedInstanceState.getString(BUNDLE_SNIPPET_NAME);
+            if (prevName == null) {
+                // error
+                finish();
+            }
+
+            // returning from run action
+            assert prevName != null;
+            mSnipName = prevName;
+            contents = savedInstanceState
+                    .getCharSequence(BUNDLE_SNIPPET_CONTENTS);
+
+        } else if (name.equals("")) {
             finish();
             return;
+        } else {
+            // launched from main activity
+            mSnipName = name;
+            contents = mSnippetStore.loadSnip(mSnipName);
         }
 
-        mSnipName = name;
-
-        mSnippetStore = SnippetStore.getInstance();
-        String snipContents = mSnippetStore.loadSnip(mSnipName);
-
         mTextEditor = findViewById(R.id.snip_editor);
-        mTextEditor.setText(snipContents);
+        mTextEditor.setText(contents);
         mTextEditor.bringToFront();
     }
 
@@ -48,7 +72,8 @@ public class SnippetEditor extends AppCompatActivity {
     }
 
     public void onRun(View view) {
-        // note: run WITHOUT saving in case changes want to be made
+        SnippetRunnerActivity.launch(this, mSnipName,
+                mTextEditor.getText().toString());
     }
 
     public void onCancel(View view) {
@@ -63,5 +88,12 @@ public class SnippetEditor extends AppCompatActivity {
                 .setOnDismissListener(dialog -> finish());
 
         builder.show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(BUNDLE_SNIPPET_NAME, mSnipName);
+        outState.putCharSequence(BUNDLE_SNIPPET_CONTENTS, mTextEditor.getText());
     }
 }
