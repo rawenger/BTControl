@@ -107,8 +107,10 @@ public class SnippetRunnerActivity extends AppCompatActivity {
     }
 
     private void runNextLine() {
-        if (mCurLine == mContents.length)
+        if (mCurLine == mContents.length) {
+            mHistory.printDone();
             return;
+        }
 
         String line = mContents[mCurLine++];
 

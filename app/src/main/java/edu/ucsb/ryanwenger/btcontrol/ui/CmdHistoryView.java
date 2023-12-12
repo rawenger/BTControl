@@ -45,6 +45,11 @@ public class CmdHistoryView extends HorizontalScrollView {
         scrollToEnd();
     }
 
+    public void printDone() {
+        mText.append("\n===========DONE===========\n");
+        scrollToEnd();
+    }
+
     private void scrollToEnd() {
         mVScroll.fullScroll(View.FOCUS_DOWN);
 //        mVScroll.smoothScrollTo(0, mVScroll.getBottom());
