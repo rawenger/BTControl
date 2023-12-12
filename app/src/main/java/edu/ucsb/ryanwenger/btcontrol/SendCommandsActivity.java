@@ -1,6 +1,7 @@
 package edu.ucsb.ryanwenger.btcontrol;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -31,7 +32,6 @@ public class SendCommandsActivity extends AppCompatActivity {
 
         mTargetDevice = new BTDevice(target);
         mTargetDevice.buildCommandMaps();
-
         mCmdEntryView = findViewById(R.id.bt_command_text_view);
         assert mCmdEntryView != null;
         mAutocompleteAdapter = new ArrayAdapter<>(this,

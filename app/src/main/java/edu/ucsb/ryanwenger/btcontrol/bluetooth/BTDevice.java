@@ -10,16 +10,22 @@ import android.bluetooth.BluetoothHidDevice;
 import android.bluetooth.BluetoothHidDeviceAppQosSettings;
 import android.bluetooth.BluetoothHidDeviceAppSdpSettings;
 import android.bluetooth.BluetoothProfile;
-import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -198,7 +204,73 @@ public class BTDevice {
 
         cmds.put("help", unused -> getHelp());
 
+        cmds.put("status", unused -> {
+            BluetoothA2dp dev = (BluetoothA2dp) mProtoHandle;
+            return (dev.isA2dpPlaying(mDev) ? "P" : "Not p") + "laying";
+        });
+
+        cmds.put("wait", this::A2dpWait);
+
         return cmds;
+    }
+
+//    BroadcastReceiver mStateChangeReceiver;
+    @SuppressLint("DefaultLocale")
+    private String A2dpWait(String[] action) {
+        String usage = "usage: wait <play|pause>";
+        if (action.length != 1)
+            return usage;
+
+        final int waitFor;
+
+        switch (action[0]) {
+            case "play" -> waitFor = BluetoothA2dp.STATE_PLAYING;
+            case "pause" -> waitFor = BluetoothA2dp.STATE_NOT_PLAYING;
+            default -> {return usage;}
+        }
+
+        Semaphore changed = new Semaphore(0);
+
+        BroadcastReceiver mStateChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!Objects.equals(intent.getAction(), BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED))
+                    return;
+
+                if (waitFor ==
+                        intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, -1))
+                {
+                    if (Objects.equals(
+                            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE),
+                            mDev))
+                    {
+                        changed.release();
+                    }
+                }
+            }
+        };
+
+        // TODO: add cleanup if user exits A2dp menu before state changes
+        IntentFilter a2dpStateChange =
+                new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED);
+
+        ContextCompat.registerReceiver(BTControl.getContext(),
+                    mStateChangeReceiver, a2dpStateChange,
+                    ContextCompat.RECEIVER_EXPORTED);
+
+        final long tStart = System.currentTimeMillis();
+
+        try {
+            changed.acquire();
+        } catch (InterruptedException e) {
+            return "interrupted";
+        } finally {
+            // executed even if catch block returns, see https://stackoverflow.com/a/65049
+            BTControl.getContext().unregisterReceiver(mStateChangeReceiver);
+        }
+
+        final long tEnd = System.currentTimeMillis();
+        return  String.format("%s: completed after %d ms", action[0], tEnd - tStart);
     }
 
     public void finalize() {
